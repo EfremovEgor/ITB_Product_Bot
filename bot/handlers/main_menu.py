@@ -7,10 +7,8 @@ from aiogram.fsm.context import FSMContext
 from filters import UserAccessFilter
 
 router = Router()
-# router.message.filter(UserAccessFilter())
 
 
-@router.message()
 @router.message(F.text.in_(["Меню", "/start"]))
 async def start_handler(message: Message, state: FSMContext):
     kb = kb_start_menu()

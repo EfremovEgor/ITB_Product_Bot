@@ -33,3 +33,7 @@ class MenuNavigation(StatesGroup):
     manage_users_investigating_employees = State()
     manage_users_remove_access = State()
     # API ключи
+    api_keys_choosing_account = State()
+    api_keys_choosing_marketplace_on_creation = State()
+    api_keys_inserting_name_on_creation = State()
+    api_keys_inserting_key_on_creation = State()

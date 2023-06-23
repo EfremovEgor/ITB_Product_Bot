@@ -24,7 +24,7 @@ def kb_start_menu() -> ReplyKeyboardMarkup:
     return kb
 
 
-def kb_add_goods_choosing_marketplace() -> ReplyKeyboardMarkup:
+def kb_choosing_marketplace() -> ReplyKeyboardMarkup:
     builder = ReplyKeyboardBuilder()
     for market in utils.AVAILABLE_MARKETPLACES:
         builder.add(KeyboardButton(text=market))
@@ -98,6 +98,20 @@ def kb_manage_users_menu():
         [
             KeyboardButton(text="Новый сотрудник"),
             KeyboardButton(text="Список сотрудников"),
+        ]
+    )
+    kb.append([KeyboardButton(text="Меню")])
+
+    kb = ReplyKeyboardMarkup(keyboard=kb, resize_keyboard=True)
+    return kb
+
+
+def kb_api_keys_menu():
+    kb = list()
+    kb.append(
+        [
+            KeyboardButton(text="Новый кабинет"),
+            KeyboardButton(text="Список кабинетов"),
         ]
     )
     kb.append([KeyboardButton(text="Меню")])

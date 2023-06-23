@@ -3,7 +3,7 @@ from aiogram.types import Message, ReplyKeyboardRemove
 from keyboards import (
     kb_add_goods_choosing_account,
     kb_add_goods_choosing_notification,
-    kb_add_goods_choosing_marketplace,
+    kb_choosing_marketplace,
     kb_go_to_start_menu,
     kb_start_menu,
 )
@@ -18,7 +18,7 @@ router.message.filter(UserAccessFilter())
 
 @router.message(MenuNavigation.main_menu, F.text == "Добавить товар")
 async def add_good(message: Message, state: FSMContext):
-    kb = kb_add_goods_choosing_marketplace()
+    kb = kb_choosing_marketplace()
     await message.answer("Выберите площадку", reply_markup=kb)
     await state.set_state(MenuNavigation.add_goods_choosing_marketplace)
 
@@ -28,7 +28,7 @@ async def add_good(message: Message, state: FSMContext):
     F.text.in_(AvailableButtonNames.marketplaces),
 )
 async def marketplace_choosen(message: Message, state: FSMContext):
-    await state.update_data(chosen_marketplace=message.text.lower())
+    await state.update_data(chosen_marketplace=message.text)
     accounts = get_accounts()
     kb = kb_add_goods_choosing_account(accounts)
     await message.answer("Выберите аккаунт", reply_markup=kb)
@@ -40,10 +40,10 @@ async def marketplace_choosen(message: Message, state: FSMContext):
     F.text.in_(get_accounts()),
 )
 async def account_chosen(message: Message, state: FSMContext):
-    await state.update_data(chosen_account=message.text.lower())
+    await state.update_data(chosen_account=message.text)
     user_data = await state.get_data()
     kb = kb_add_goods_choosing_notification(
-        AvailableButtonNames.notifications[user_data["chosen_marketplace"]]
+        AvailableButtonNames.notifications[user_data["chosen_marketplace"].lower()]
     )
     await message.answer("Выберите оповещение", reply_markup=kb)
     await state.set_state(MenuNavigation.add_goods_choosing_notification)
@@ -55,7 +55,9 @@ async def notification_chosen(message: Message, state: FSMContext):
 
     if (
         message.text
-        not in AvailableButtonNames.notifications[user_data["chosen_marketplace"]]
+        not in AvailableButtonNames.notifications[
+            user_data["chosen_marketplace"].lower()
+        ]
     ):
         kb = kb_add_goods_choosing_notification(
             AvailableButtonNames.notifications[user_data["chosen_marketplace"]]
@@ -71,7 +73,7 @@ async def notification_chosen(message: Message, state: FSMContext):
 
 @router.message(MenuNavigation.add_goods_inserting_id)
 async def id_chosen(message: Message, state: FSMContext):
-    await state.update_data(chosen_id=message.text.lower())
+    await state.update_data(chosen_id=message.text)
     user_data = await state.get_data()
     kb = kb_start_menu()
     await message.answer("Товар успешно зарегистрирован.", reply_markup=kb)

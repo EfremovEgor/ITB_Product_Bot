@@ -1,9 +1,17 @@
-from models import UnregisteredUser, RegisteredUser
-from database import session
+import requests
+from config import MPSTATS_TOKEN
 
-to_create = RegisteredUser(telegram_id=1070199744, name="Егор")
-
-# session.add(to_create)
-# session.commit()
-# for user in session.query(RegisteredUser).all():
-#     print(user.name)
+ID = 156259549
+headers = {
+    "Content-Type": "application/json",
+    "X-Mpstats-TOKEN": MPSTATS_TOKEN,
+}
+resp = requests.get(
+    url=f"https://mpstats.io/api/wb/get/item/156259549/by_category?auth-token={MPSTATS_TOKEN}",
+    headers=headers,
+)
+# data = {"ids": [156259549]}
+# resp = requests.post(
+#     url=f"https://mpstats.io/api/wb/get/items/batch", headers=headers, json=data
+# )
+print(resp.json())

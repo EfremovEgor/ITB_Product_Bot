@@ -3,7 +3,7 @@ import logging
 
 from aiogram import Bot, Dispatcher
 import config
-from handlers import add_goods_menu, main_menu, manage_users_menu
+from handlers import add_goods_menu, main_menu, manage_users_menu, api_keys_menu
 
 
 async def main():
@@ -12,7 +12,10 @@ async def main():
     dp = Dispatcher()
 
     dp.include_routers(
-        add_goods_menu.router, manage_users_menu.router, main_menu.router
+        main_menu.router,
+        add_goods_menu.router,
+        manage_users_menu.router,
+        api_keys_menu.router,
     )
     await bot.delete_webhook(drop_pending_updates=True)
     await dp.start_polling(bot, allowed_updates=dp.resolve_used_update_types())

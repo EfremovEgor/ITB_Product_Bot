@@ -1,5 +1,7 @@
 import json
 import os
+from database import session
+from models import UnregisteredUser, RegisteredUser, Account
 
 
 def read_json_properties(filename: str, properties: list) -> list:
@@ -17,6 +19,6 @@ AVAILABLE_MARKETPLACES = read_json_properties(
 )[0]
 
 
-def get_accounts() -> list[str]:
-    a = [["Первый", 123213412312], ["Второй", 123213412312]]
-    return [x[0] for x in a]
+def get_accounts_by_marketplace(marketplace: str) -> list[str]:
+    accounts = session.query(Account).where(Account.marketplace == marketplace).all()
+    return [account.name for account in accounts]

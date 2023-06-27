@@ -28,15 +28,12 @@ class Account(Base):
     marketplace = Column(String, nullable=False)
 
 
-class Product(Base):
-    __tablename__ = "products"
+class Good(Base):
+    __tablename__ = "goods"
     id = Column(Integer, primary_key=True)
-
-
-Column("id", Integer, primary_key=True),
-Column("marketplace", String, nullable=False),
-Column("notification_id", Integer, nullable=False),
-Column("market_place_id", Integer, nullable=False),
-Column("importance", String, nullable=False),
-Column("last_sent_notification", DateTime),
-Column("available", Boolean),
+    marketplace = Column(String, nullable=False)
+    notification_id = Column(Integer, nullable=False)
+    market_place_id = Column(String, nullable=False)
+    importance = Column(String, default="None")
+    last_sent_notification = Column(DateTime, default=datetime.min)
+    available = Column(Boolean, default=True)

@@ -5,7 +5,55 @@ from aiogram.types import (
 from aiogram.utils.keyboard import ReplyKeyboardBuilder
 import utils
 from database import session
-from models import UnregisteredUser, RegisteredUser
+from models import UnregisteredUser, RegisteredUser, Account, Good
+
+
+def kb_delete_good() -> ReplyKeyboardMarkup:
+    kb = list()
+    kb.append([KeyboardButton(text="Удалить")])
+    kb.append([KeyboardButton(text="Назад")])
+    kb = ReplyKeyboardMarkup(keyboard=kb, resize_keyboard=True)
+    return kb
+
+
+def kb_available_goods(marketplace: str) -> ReplyKeyboardMarkup:
+    goods = (
+        session.query(Good).where(Good.marketplace == marketplace.capitalize()).all()
+    )
+    builder = ReplyKeyboardBuilder()
+    for good in goods:
+        builder.add(KeyboardButton(text=f"{good.market_place_id}"))
+    builder.adjust(1)
+    builder.row(KeyboardButton(text="Меню"))
+    kb = builder.as_markup(resize_keyboard=True)
+    return kb
+
+
+def kb_available_accounts() -> ReplyKeyboardMarkup:
+    accounts = session.query(Account).all()
+    builder = ReplyKeyboardBuilder()
+    for account in accounts:
+        builder.add(
+            KeyboardButton(text=f"{account.name} Маркетплейс: {account.marketplace}")
+        )
+    builder.adjust(1)
+    builder.row(KeyboardButton(text="Меню"))
+    kb = builder.as_markup(resize_keyboard=True)
+    return kb
+
+
+def kb_edit_account():
+    kb = list()
+    kb.append(
+        [
+            KeyboardButton(text="Изменить имя"),
+            KeyboardButton(text="Изменить API ключ"),
+            KeyboardButton(text="Удалить"),
+        ]
+    )
+    kb.append([KeyboardButton(text="Назад")])
+    kb = ReplyKeyboardMarkup(keyboard=kb, resize_keyboard=True)
+    return kb
 
 
 def kb_go_to_start_menu() -> ReplyKeyboardMarkup:
@@ -34,14 +82,23 @@ def kb_choosing_marketplace() -> ReplyKeyboardMarkup:
     return kb
 
 
-def kb_add_goods_choosing_account(accounts: list[str]) -> ReplyKeyboardMarkup:
+def kb_return() -> ReplyKeyboardMarkup:
+    kb = list()
+    kb.append([KeyboardButton(text="Назад")])
+    kb = ReplyKeyboardMarkup(keyboard=kb, resize_keyboard=True)
+    return kb
+
+
+def kb_add_goods_choosing_account(marketplace: str) -> ReplyKeyboardMarkup:
+    accounts = session.query(Account).where(Account.marketplace == marketplace).all()
     builder = ReplyKeyboardBuilder()
     for account in accounts:
-        builder.add(KeyboardButton(text=account))
-    builder.adjust(3)
+        builder.add(
+            KeyboardButton(text=f"{account.name} Маркетплейс: {account.marketplace}")
+        )
+    builder.adjust(1)
     builder.row(KeyboardButton(text="Меню"))
     kb = builder.as_markup(resize_keyboard=True)
-
     return kb
 
 

@@ -1,7 +1,6 @@
 from aiogram.fsm.state import StatesGroup, State
 import utils
-from marketplaces.yandex_market.yandex_market import YandexMarketCabinet
-from marketplaces.wildberries.wildberries import WildberriesCabinet
+from marketplaces.wildberries import WildberriesCabinet
 
 
 class AvailableButtonNames:
@@ -9,7 +8,6 @@ class AvailableButtonNames:
     marketplaces = utils.AVAILABLE_MARKETPLACES
     accounts = list()
     notifications = {
-        "yandex market": YandexMarketCabinet.available_notifications,
         "wildberries": WildberriesCabinet.available_notifications,
     }
 
@@ -27,6 +25,9 @@ class MenuNavigation(StatesGroup):
     add_goods_choosing_notification = State()
     add_goods_inserting_id = State()
     # Список товаров
+    investigate_goods_choosing_marketplace = State()
+    investigate_goods_choosing_good = State()
+    investigate_goods_edit_good = State()
     # Пользователи
     manage_users_adding_new_employee = State()
     manage_users_grant_access = State()
@@ -37,3 +38,7 @@ class MenuNavigation(StatesGroup):
     api_keys_choosing_marketplace_on_creation = State()
     api_keys_inserting_name_on_creation = State()
     api_keys_inserting_key_on_creation = State()
+    api_keys_existing_accounts = State()
+    api_keys_existing_accounts_edit_account = State()
+    api_keys_existing_accounts_choosing_name = State()
+    api_keys_existing_accounts_choosing_api_key = State()

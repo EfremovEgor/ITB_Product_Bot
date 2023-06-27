@@ -9,8 +9,12 @@ from keyboards import (
 )
 from states import MenuNavigation, AvailableButtonNames
 from aiogram.fsm.context import FSMContext
-from utils import get_accounts
+from utils import get_accounts_by_marketplace
 from filters import UserAccessFilter
+import datetime
+from database import session
+from models import Good
+from marketplaces.manager import get_notification_id_by_text
 
 router = Router()
 router.message.filter(UserAccessFilter())
@@ -29,17 +33,20 @@ async def add_good(message: Message, state: FSMContext):
 )
 async def marketplace_choosen(message: Message, state: FSMContext):
     await state.update_data(chosen_marketplace=message.text)
-    accounts = get_accounts()
-    kb = kb_add_goods_choosing_account(accounts)
+    kb = kb_add_goods_choosing_account(message.text.strip())
     await message.answer("Выберите аккаунт", reply_markup=kb)
     await state.set_state(MenuNavigation.add_goods_choosing_account)
 
 
 @router.message(
     MenuNavigation.add_goods_choosing_account,
-    F.text.in_(get_accounts()),
 )
 async def account_chosen(message: Message, state: FSMContext):
+    data = await state.get_data()
+    if message.text.strip().split("Маркетплейс:")[
+        0
+    ].strip() == get_accounts_by_marketplace(data["chosen_marketplace"]):
+        return
     await state.update_data(chosen_account=message.text)
     user_data = await state.get_data()
     kb = kb_add_goods_choosing_notification(
@@ -75,8 +82,18 @@ async def notification_chosen(message: Message, state: FSMContext):
 async def id_chosen(message: Message, state: FSMContext):
     await state.update_data(chosen_id=message.text)
     user_data = await state.get_data()
+
     kb = kb_start_menu()
     await message.answer("Товар успешно зарегистрирован.", reply_markup=kb)
-    # f"{user_data['chosen_notification'],user_data['chosen_marketplace'],user_data['chosen_account'],user_data['chosen_id']}"
+    session.add(
+        Good(
+            marketplace=user_data["chosen_marketplace"],
+            notification_id=get_notification_id_by_text(
+                user_data["chosen_marketplace"], user_data["chosen_notification"]
+            ),
+            market_place_id=user_data["chosen_id"],
+        )
+    )
+    session.commit()
     await state.clear()
     await state.set_state(MenuNavigation.main_menu)

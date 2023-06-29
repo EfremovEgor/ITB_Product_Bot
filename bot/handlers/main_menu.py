@@ -1,6 +1,6 @@
 from aiogram import F, Router
 from aiogram.types import Message
-from aiogram.filters import Command, invert_f
+from aiogram.filters import invert_f
 from keyboards import kb_start_menu
 from states import MenuNavigation
 from aiogram.fsm.context import FSMContext

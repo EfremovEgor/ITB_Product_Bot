@@ -1,5 +1,5 @@
 from aiogram import F, Router
-from aiogram.types import Message, ReplyKeyboardRemove
+from aiogram.types import Message
 from keyboards import (
     kb_api_keys_menu,
     kb_choosing_marketplace,
